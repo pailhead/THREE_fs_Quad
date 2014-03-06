@@ -21,7 +21,31 @@ var clock,
 var quadMesh,
     quadMaterial;
 
+////////////
+//gui 
+////////////
 
+
+var guiParam = {
+    tileX: 1,
+    tileY: 1
+};
+
+
+var gui = new dat.GUI({});
+
+
+gui.add(guiParam, "tileX", 1, 30).onChange(function(){
+
+    quadMesh.material.uniforms._tileUV.value.setX(guiParam.tileX);
+
+});
+
+gui.add(guiParam, "tileY", 1, 30).onChange(function(){
+
+    quadMesh.material.uniforms._tileUV.value.setY(guiParam.tileY);
+    
+});
 
 
 init();
@@ -84,7 +108,13 @@ function init() {
         _scrSizeAsp:{
             type:"v3",
             value: new THREE.Vector3()
+        },
+        //vec2 for UV tiling
+        _tileUV:{
+            type:"v2",
+            value: new THREE.Vector2(1,1)
         }
+
     }
 
     //custom shader material

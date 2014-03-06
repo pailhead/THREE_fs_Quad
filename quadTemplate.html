@@ -54,11 +54,12 @@ void main()	{
 <script type="x-shader/x-fragment" id="fragmentShader">
 
 varying vec2 vUv; //from vert shader
+uniform vec2 _tileUV; //input from dat.gui
 
 void main()	{
 
 	//UV mapping tiled 10 times
-	vec2 tiledUV = vUv * 10.0;//scaled
+	vec2 tiledUV = vUv * _tileUV;//scaled
 	tiledUV -= floor(tiledUV);//sawtooth function
 
 	//final color 
