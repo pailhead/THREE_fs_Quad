@@ -28,7 +28,10 @@ var quadMesh,
 
 var guiParam = {
     tileX: 1,
-    tileY: 1
+    tileY: 1,
+    rotateUV: 0,
+    skewUVx: 0,
+    skewUVy: 0
 };
 
 
@@ -36,15 +39,33 @@ var gui = new dat.GUI({});
 
 
 gui.add(guiParam, "tileX", 1, 30).onChange(function(){
-
     quadMesh.material.uniforms._tileUV.value.setX(guiParam.tileX);
-
 });
 
 gui.add(guiParam, "tileY", 1, 30).onChange(function(){
-
     quadMesh.material.uniforms._tileUV.value.setY(guiParam.tileY);
-    
+});
+
+gui.add(guiParam, "rotateUV", 0, 360).onChange(function(){
+    var angleInRad = deg2rad(guiParam.rotateUV);
+    var a = Math.cos(angleInRad);
+    var b = Math.sin(angleInRad);
+
+    quadMesh.material.uniforms._rotateUVmatrix.value.set( 
+         a,
+        -b,
+         b,
+         a
+    );
+});
+
+gui.add(guiParam, "skewUVx", -1, 1).onChange(function(){
+    quadMesh.material.uniforms._skewXY.value.setX(guiParam.skewUVx);
+
+});
+
+gui.add(guiParam, "skewUVy", -1, 1).onChange(function(){
+    quadMesh.material.uniforms._skewXY.value.setY(guiParam.skewUVy);
 });
 
 
@@ -99,6 +120,7 @@ function init() {
     stats.domElement.style.zIndex = 100; 
     container.appendChild(stats.domElement);
 
+    texture = new THREE.ImageUtils.loadTexture( './textures/airport_night_final.jpg' );
 
 
 
@@ -113,6 +135,20 @@ function init() {
         _tileUV:{
             type:"v2",
             value: new THREE.Vector2(1,1)
+        },
+        //rotation matrix, provided as vec4, hmm there is no type for v2, so lets rebuild it in the shader
+        _rotateUVmatrix:{
+            type:"v4",
+            value: new THREE.Vector4(1,0,0,1)
+        },
+        _skewXY:{
+            type:"v2",
+            value: new THREE.Vector2()
+        },
+        //texture
+        _texture:{
+            type:"t",
+            value: texture
         }
 
     }
@@ -165,4 +201,9 @@ function onWindowResize(){
     //apply where needed
     quadMesh.material.uniforms._scrSizeAsp.value.set(scrWIDTH, scrHEIGHT, scrASPECT);//say we want to let the shader know this
     renderer.setSize(scrWIDTH, scrHEIGHT);
+}
+
+
+function deg2rad(val){
+    return val*(Math.PI/180);
 }
