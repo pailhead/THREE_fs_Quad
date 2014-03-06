@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>THREE.js fullscreen quad shader template</title>
+<style>
+
+body{
+	margin:0;
+}
+
+canvas {
+	width: 100%; 
+	height: 100%; 
+	background: #000;
+    display: block; /* fix necessary to remove space at bottom of canvas */
+}
+}
+
+#container {
+	/*position:absolute;*/
+	background: #000;
+	width: 100%;
+	height: 100%;
+	/*height: 100vh;*/
+}
+
+</style>
+</head>
+
+<body>
+<div id="container"></div>
+
+
+
+
+</body>
+
+
+<!--****************************-->
+<!-- 	   vertex shader 	    -->
+<!--****************************-->
+<script type="x-shader/x-vertex" id="vertexShader">
+
+varying vec2 vUv; //mapping channel, to be carried on into the fragment shader
+uniform vec3 _scrSizeAsp; //custom uniform (input - xy: screen size in pixels, z: aspect ratio)
+ 
+void main()	{
+
+	vUv = uv;//uv is a vec2 attribute that comes from three.js (THREE.shaderMaterial sets this up);
+	// vec2 screenPosition = position.xy; //position XY is already in NDC because THREE.PlaneGeometry(2,2) generates it that way
+	gl_Position = vec4(position.xy, -.041, 1.0);//position sent to the fragment shader
+}
+
+</script>
+
+
+
+<!--****************************-->
+<!-- 	   fragment shader 	    -->
+<!--****************************-->
+
+<script type="x-shader/x-fragment" id="fragmentShader">
+
+varying vec2 vUv; //from vert shader
+
+void main()	{
+
+	//UV mapping tiled 10 times
+	vec2 tiledUV = vUv * 10.0;//scaled
+	tiledUV -= floor(tiledUV);//sawtooth function
+
+	//final color 
+	gl_FragColor = vec4(tiledUV , 0.0, 1.0);
+}
+
+
+</script>
+
+
+<script type="text/javascript" src="./scripts/jquery.min.js"></script>
+<script type="text/javascript" src="./scripts/three.min.js"></script>
+<script type="text/javascript" src="./scripts/dat.gui.min.js"></script>
+<script type="text/javascript" src="./scripts/Detector.js"></script>
+<script type="text/javascript" src="./scripts/Stats.js"></script>
+<script type="text/javascript" src="./scripts/quadTemplate.js"></script>
+
+
+</html>
+
+
+
+
