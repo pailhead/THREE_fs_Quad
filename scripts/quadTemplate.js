@@ -169,6 +169,10 @@ function init() {
 
     //custom uniforms
     var quadUniforms = {
+        _elapsedTime:{
+            type:"f",
+            value:time
+        },
         //vector3 screen size in pixels, and aspect ratio
         _scrSizeAsp:{
             type:"v3",
@@ -248,7 +252,7 @@ function update(){
 
     deltaTime = clock.getDelta();
     time += deltaTime;
-    // quadMesh.material.uniforms._elapsedTime.value = time;
+    quadMesh.material.uniforms._elapsedTime.value = time;
 
 
     stats.update();
